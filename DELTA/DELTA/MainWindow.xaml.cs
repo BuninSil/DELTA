@@ -23,11 +23,13 @@ namespace DELTA
             string password = Pass.Password;  // PasswordBox для ввода пароля
 
             // Проверяем пользователя в базе данных
-            if (AuthenticateUser(username, password))
+            int userId = AuthenticateUser(username, password);
+            if (userId != -1)
             {
                 MessageBox.Show("Авторизация успешна!");
-                Window1 Win = new Window1();
-                Win.Show();
+                // Передаем userId в окна корзины и заказов
+                Window1 cartWindow = new Window1(userId);
+                cartWindow.Show();
                 this.Close(); // Закрываем текущее окно
             }
             else
@@ -36,10 +38,11 @@ namespace DELTA
             }
         }
 
+
         // Метод для проверки авторизации
-        private bool AuthenticateUser(string username, string password)
+        private int AuthenticateUser(string username, string password)
         {
-            bool isAuthenticated = false;
+            int userId = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -47,20 +50,15 @@ namespace DELTA
                 {
                     connection.Open();
 
-                    // SQL запрос для проверки логина и пароля
-                    string query = "SELECT COUNT(1) FROM Users WHERE username = @username AND password = @password";
+                    // SQL запрос для получения ID пользователя
+                    string query = "SELECT user_id FROM Users WHERE username = @username AND password = @password";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@username", username);
                     command.Parameters.AddWithValue("@password", password);
 
                     // Выполнение команды и получение результата
-                    int count = Convert.ToInt32(command.ExecuteScalar());
-
-                    if (count == 1)
-                    {
-                        isAuthenticated = true;
-                    }
+                    userId = Convert.ToInt32(command.ExecuteScalar());
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +66,8 @@ namespace DELTA
                 }
             }
 
-            return isAuthenticated;
+            return userId;
         }
+
     }
 }

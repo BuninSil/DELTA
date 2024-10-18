@@ -17,3 +17,5 @@ C:\Users\BuninSil\source\repos\DELTA\DELTA\obj\Debug\Window1.baml
 C:\Users\BuninSil\source\repos\DELTA\DELTA\obj\Debug\DELTA_MarkupCompile.lref
 C:\Users\BuninSil\source\repos\DELTA\DELTA\obj\Debug\CartWindow.baml
 C:\Users\BuninSil\source\repos\DELTA\DELTA\obj\Debug\CartWindow.g.cs
+C:\Users\BuninSil\source\repos\DELTA\DELTA\obj\Debug\OrdersWindow.baml
+C:\Users\BuninSil\source\repos\DELTA\DELTA\obj\Debug\OrdersWindow.g.cs

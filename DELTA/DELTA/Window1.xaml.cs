@@ -11,21 +11,25 @@ namespace DELTA
     {
         public ObservableCollection<Product> Products { get; set; }
         public Cart ShoppingCart { get; set; }
-
-        public Window1()
+        
+        private int userId;
+        public Window1(int userId)
         {
             InitializeComponent();
             ShoppingCart = new Cart();
+            this.userId = userId;
+            
             LoadProducts();
         }
 
         public class Product
         {
+            public int ProductId { get; set; }
             public string Name { get; set; }
             public decimal Price { get; set; }
             public string Stock { get; set; }
             public string ImagePath { get; set; }
-            public int Quantity { get; set; }  // Количество товара в корзине
+            public int Quantity { get; set; }
         }
 
         public class Cart
@@ -51,19 +55,13 @@ namespace DELTA
                 }
             }
 
-            public decimal TotalPrice
-            {
-                get
-                {
-                    return Items.Sum(item => item.Price);
-                }
-            }
+            public decimal TotalPrice => Items.Sum(item => item.Price * item.Quantity);
         }
 
         private void LoadProducts()
         {
             string connectionString = "Data Source=localhost;Initial Catalog=delta;Integrated Security=True;";
-            string query = "SELECT Name, Price, stock, ImagePath FROM Products";
+            string query = "SELECT product_id, name, price, stock, ImagePath FROM Products";
 
             Products = new ObservableCollection<Product>();
 
@@ -80,8 +78,9 @@ namespace DELTA
                         {
                             Products.Add(new Product
                             {
-                                Name = reader["Name"].ToString(),
-                                Price = Convert.ToDecimal(reader["Price"]),
+                                ProductId = (int)reader["product_id"],
+                                Name = reader["name"].ToString(),
+                                Price = Convert.ToDecimal(reader["price"]),
                                 Stock = reader["stock"].ToString(),
                                 ImagePath = reader["ImagePath"].ToString()
                             });
@@ -118,8 +117,58 @@ namespace DELTA
 
         private void OpenCart_Click(object sender, RoutedEventArgs e)
         {
-            var cartWindow = new CartWindow { DataContext = ShoppingCart };
+            var cartWindow = new CartWindow(userId) { DataContext = ShoppingCart };
             cartWindow.Show();
+        }
+
+        private void PlaceOrder(int userId)
+        {
+            string connectionString = "Data Source=localhost;Initial Catalog=delta;Integrated Security=True;";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Создать новый заказ в таблице Orders
+                        string insertOrderQuery = "INSERT INTO Orders (user_id, order_date, status) OUTPUT INSERTED.order_id VALUES (@UserId, GETDATE(), 'placed')";
+                        SqlCommand insertOrderCommand = new SqlCommand(insertOrderQuery, connection, transaction);
+                        insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
+
+                        int orderId = (int)insertOrderCommand.ExecuteScalar();
+
+                        // 2. Добавить продукты в OrderProducts
+                        foreach (var item in ShoppingCart.Items)
+                        {
+                            string insertOrderProductQuery = "INSERT INTO OrderProducts (order_id, product_id, quantity) VALUES (@OrderId, @ProductId, @Quantity)";
+                            SqlCommand insertOrderProductCommand = new SqlCommand(insertOrderProductQuery, connection, transaction);
+                            insertOrderProductCommand.Parameters.AddWithValue("@OrderId", orderId);
+                            insertOrderProductCommand.Parameters.AddWithValue("@ProductId", item.ProductId);
+                            insertOrderProductCommand.Parameters.AddWithValue("@Quantity", item.Quantity);
+                            insertOrderProductCommand.ExecuteNonQuery();
+                        }
+
+                        // 3. Подтвердить транзакцию
+                        transaction.Commit();
+                        MessageBox.Show("Заказ успешно оформлен!");
+                    }
+                    catch (Exception ex)
+                    {
+                        // В случае ошибки откатить транзакцию
+                        transaction.Rollback();
+                        MessageBox.Show("Ошибка при оформлении заказа: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        private void ShowOrders_Click(object sender, RoutedEventArgs e)
+        {
+            var ordersWindow = new OrdersWindow(userId);
+            ordersWindow.Show();
         }
     }
 }

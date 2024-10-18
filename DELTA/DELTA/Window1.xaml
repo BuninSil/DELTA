@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DELTA"
         mc:Ignorable="d"
-        Title="Delta" Height="500" Width="950" 
+        Title="Delta" Height="500" Width="950"
         Background="Transparent" MinHeight="500" MinWidth="750" MaxWidth="950" MaxHeight="500">
 
     <Window.Resources>
@@ -35,7 +35,7 @@
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation Storyboard.TargetName="border" 
+                                            <ColorAnimation Storyboard.TargetName="border"
                                                             Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                                             To="#FF0055AA" Duration="0:0:0.3"/>
                                         </Storyboard>
@@ -44,7 +44,7 @@
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation Storyboard.TargetName="border" 
+                                            <ColorAnimation Storyboard.TargetName="border"
                                                             Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                                             To="#FF007ACC" Duration="0:0:0.3"/>
                                         </Storyboard>
@@ -60,9 +60,10 @@
 
     <Grid Background="#FF3F3F47">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="10" HorizontalAlignment="Center">
-            <Button Content="Назад" Width="75" Margin="10,0,100,0" Click="Button_Click" HorizontalAlignment="Left"/>
-            <TextBlock Text="DELTA" Foreground="White" FontSize="30" Margin="10,0,10,0" FontFamily="Bauhaus 93" Height="45" Width="300" TextAlignment="Center" RenderTransformOrigin="0.499,0.501" />
-            <Button Content="Обновить" Width="75" Click="Button_Click1" Margin="100,0,10,0"/>
+            <Button Content="Назад" Width="75" Margin="10,0,10,0" Click="Button_Click" HorizontalAlignment="Left"/>
+            <Button Content="Заказы" Width="75" Click="ShowOrders_Click" Margin="0,0,50,0"/>
+            <TextBlock Text="ALPHA" Foreground="White" FontSize="30" Margin="10,0,10,0" FontFamily="Bauhaus 93" Height="45" Width="300" TextAlignment="Center"/>
+            <Button Content="Обновить" Width="75" Click="Button_Click1" Margin="50,0,10,0"/>
             <Button Content="Корзина" Width="75" Click="OpenCart_Click" Margin="10,0,0,0"/>
         </StackPanel>
 
@@ -79,21 +80,21 @@
                         <Border Style="{StaticResource ProductCardStyle}" Width="200" Height="300" Margin="10">
                             <StackPanel>
                                 <Image Source="{Binding ImagePath}" Height="150" Margin="0,0,0,10"/>
-                                <TextBlock Text="{Binding Name}" 
-                                           FontSize="16" 
-                                           FontWeight="Bold" 
-                                           Foreground="White" 
+                                <TextBlock Text="{Binding Name}"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="White"
                                            TextAlignment="Center"
                                            Margin="0,0,0,5"/>
                                 <TextBlock Text="{Binding Stock, StringFormat='{}{0} шт на складе'}"
-                                           FontSize="12" 
-                                           Foreground="White" 
-                                           TextWrapping="Wrap" 
+                                           FontSize="12"
+                                           Foreground="White"
+                                           TextWrapping="Wrap"
                                            TextAlignment="Center"
                                            Margin="0,0,0,10"/>
-                                <Button Content="Добавить в корзину" 
-                                        HorizontalAlignment="Center" 
-                                        Width="150" 
+                                <Button Content="Добавить в корзину"
+                                        HorizontalAlignment="Center"
+                                        Width="150"
                                         Click="AddToCart_Click"/>
                             </StackPanel>
                         </Border>
