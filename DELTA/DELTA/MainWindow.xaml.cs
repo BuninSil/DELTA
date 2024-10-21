@@ -58,7 +58,13 @@ namespace DELTA
                     command.Parameters.AddWithValue("@password", password);
 
                     // Выполнение команды и получение результата
-                    userId = Convert.ToInt32(command.ExecuteScalar());
+                    var result = command.ExecuteScalar();
+
+                    // Проверка на null и конвертация в int
+                    if (result != null)
+                    {
+                        userId = Convert.ToInt32(result);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -68,6 +74,7 @@ namespace DELTA
 
             return userId;
         }
+
 
     }
 }

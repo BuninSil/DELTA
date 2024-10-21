@@ -71,7 +71,7 @@
             <ItemsControl ItemsSource="{Binding Products}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel />
+                        <WrapPanel/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -96,6 +96,12 @@
                                         HorizontalAlignment="Center"
                                         Width="150"
                                         Click="AddToCart_Click"/>
+                                <TextBlock Text="{Binding Price, StringFormat='{}{0} рублей'}"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           TextAlignment="Center"
+                                           Margin="0,0,0,5"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>
