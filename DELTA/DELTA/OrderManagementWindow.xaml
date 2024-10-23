@@ -1,0 +1,126 @@
+﻿<Window x:Class="DELTA.OrderManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Управление заказами" Height="650" Width="1100"
+        Background="#FF3F3F47">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FF007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" CornerRadius="10" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#FF0055AA" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#FF007ACC" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#FF4B4B4F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF6A6A6D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border CornerRadius="10" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FF6A6A6D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <!-- Темный текст -->
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+        
+    </Window.Resources>
+
+    <Grid>
+        <StackPanel Margin="10">
+            <TextBlock Text="Управление заказами" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,10,0,20" 
+                       Foreground="White"/>
+
+            <!-- Таблица для отображения заказов -->
+            <DataGrid x:Name="OrdersDataGrid" 
+                      AutoGenerateColumns="False"
+Background="#FF4B4B4F"
+BorderBrush="#FF6A6A6D"
+Foreground="White"
+RowBackground="#FF3F3F47"
+AlternatingRowBackground="#FF2F2F33"
+ColumnHeaderStyle="{StaticResource {x:Type DataGridColumnHeader}}"
+Height="400"
+HorizontalAlignment="Center"
+VerticalAlignment="Top">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID Заказа" Binding="{Binding order_id}" Width="100"/>
+                    <DataGridTextColumn Header="Имя пользователя" Binding="{Binding username}" Width="150"/>
+                    <DataGridTextColumn Header="Дата Заказа" Binding="{Binding order_date}" Width="150"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding status}" Width="150"/>
+                    <DataGridTextColumn Header="Адрес" Binding="{Binding address}" Width="200"/>
+                    <DataGridTextColumn Header="Товар" Binding="{Binding product_name}" Width="150"/>
+                    <DataGridTextColumn Header="Количество" Binding="{Binding quantity}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Выбор нового статуса -->
+            <TextBlock Text="Выберите новый статус:" Margin="0,10,0,5" Foreground="White"/>
+            <ComboBox x:Name="StatusComboBox" Width="200" Margin="0,0,0,10" Background="#FF4B4B4F" Foreground="Black" BorderBrush="#FF6A6A6D" BorderThickness="1" Padding="10">
+                <ComboBoxItem Content="Создан"/>
+                <ComboBoxItem Content="Ожидает получения"/>
+                <ComboBoxItem Content="В пути"/>
+                <ComboBoxItem Content="Получен"/>
+                <ComboBoxItem Content="Отменено"/>
+            </ComboBox>
+
+            <!-- Кнопки для управления заказами -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Изменить статус" Width="150" Click="UpdateStatus_Click" Margin="5"/>
+                <Button Content="Удалить заказ" Width="150" Click="DeleteOrder_Click" Margin="5"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

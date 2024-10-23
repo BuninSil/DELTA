@@ -23,13 +23,32 @@ namespace DELTA
             string password = Pass.Password;  // PasswordBox для ввода пароля
 
             // Проверяем пользователя в базе данных
-            int userId = AuthenticateUser(username, password);
+            var (userId, role) = AuthenticateUser(username, password);
+
             if (userId != -1)
             {
                 MessageBox.Show("Авторизация успешна!");
-                // Передаем userId в окна корзины и заказов
-                Window1 cartWindow = new Window1(userId);
-                cartWindow.Show();
+
+                // Проверка роли и открытие соответствующего окна
+                switch (role)
+                {
+                    case "admin":
+                        AdminWindow adminWindow = new AdminWindow(userId);
+                        adminWindow.Show();
+                        break;
+                    case "manager":
+                        ManagerWindow managerWindow = new ManagerWindow(userId);
+                        managerWindow.Show();
+                        break;
+                    case "user":
+                        Window1 userWindow = new Window1(userId);
+                        userWindow.Show();
+                        break;
+                    default:
+                        MessageBox.Show("Неизвестная роль.");
+                        break;
+                }
+
                 this.Close(); // Закрываем текущее окно
             }
             else
@@ -38,11 +57,11 @@ namespace DELTA
             }
         }
 
-
-        // Метод для проверки авторизации
-        private int AuthenticateUser(string username, string password)
+        // Метод для проверки авторизации и получения роли
+        private (int, string) AuthenticateUser(string username, string password)
         {
             int userId = -1;
+            string role = null;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -50,20 +69,19 @@ namespace DELTA
                 {
                     connection.Open();
 
-                    // SQL запрос для получения ID пользователя
-                    string query = "SELECT user_id FROM Users WHERE username = @username AND password = @password";
+                    // SQL запрос для получения ID пользователя и его роли
+                    string query = "SELECT user_id, role FROM Users WHERE username = @username AND password = @password";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@username", username);
                     command.Parameters.AddWithValue("@password", password);
 
-                    // Выполнение команды и получение результата
-                    var result = command.ExecuteScalar();
-
-                    // Проверка на null и конвертация в int
-                    if (result != null)
+                    // Выполнение команды и чтение результата
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.Read())
                     {
-                        userId = Convert.ToInt32(result);
+                        userId = Convert.ToInt32(reader["user_id"]);
+                        role = reader["role"].ToString();
                     }
                 }
                 catch (Exception ex)
@@ -72,9 +90,19 @@ namespace DELTA
                 }
             }
 
-            return userId;
+            return (userId, role); // Возвращаем и userId, и роль
         }
 
+        private void Label_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
 
+        }
+
+        private void TextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            RegistrationWindow win2 = new RegistrationWindow();
+            win2.Show();
+            this.Close();
+        }
     }
 }

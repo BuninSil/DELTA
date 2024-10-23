@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 E:\ВИЗУАЛСТУДИО\repos\DELTA\DELTA\App.xaml
-4477057787
+10-1251270606
 1-684787657
-81697280559
+141409776152
 13-1310406943
-CartWindow.xaml;MainWindow.xaml;OrdersWindow.xaml;Window1.xaml;
+AdminWindow.xaml;CartWindow.xaml;EditUserWindow.xaml;MainWindow.xaml;ManagerWindow.xaml;OrderManagementWindow.xaml;OrdersWindow.xaml;ProductEditor.xaml;Window1.xaml;RegistrationWindow.xaml;
 
 False
 
